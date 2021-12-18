@@ -1,13 +1,35 @@
-
 on: [push]
-
-name: AzureLoginSample
-jobs: 
-  build-and-deploy:
+env:
+  REGISTRY_NAME: babuactions
+  CLUSTER_NAME: actions
+  CLUSTER_RESOURCE_GROUP: actions
+  NAMESPACE: default
+  PROJECT_NAME: voteapp
+  
+jobs:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - shell: bash
-        env:
-          SUPER_SECRET: ${{ secrets.AZURE_CREDENTIALS }}
-        run: |
-          echo "$SUPER_SECRET"
+    - uses: actions/checkout@master
+    
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Build image on ACR
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.29.1
+        inlineScript: |
+          az configure --defaults acr=${{ env.AZURE_CONTAINER_REGISTRY }}
+          az acr build -t  -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.PROJECT_NAME }}:latest
+    
+    - name: Gets K8s context
+      uses: azure/aks-set-context@v1
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+      id: login
+
