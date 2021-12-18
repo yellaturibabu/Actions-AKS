@@ -22,8 +22,8 @@ jobs:
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
     - run: |
-        docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
-        docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
+        docker build . -t ${{ secrets.REGISTRY_SERVER }}/sampleapp:latest
+        docker push ${{ secrets.REGISTRY_SERVER }}/sampleapp:latest
     - name: Gets K8s context
       uses: azure/aks-set-context@v1
       with:
