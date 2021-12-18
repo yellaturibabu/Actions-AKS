@@ -13,15 +13,11 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: 'Build and push image'
-      uses: azure/docker-login@v1
-      with:
-        login-server: ${{ secrets.REGISTRY_SERVER }}
-        username: ${{ secrets.REGISTRY_USERNAME }}
-        password: ${{ secrets.REGISTRY_PASSWORD }}
-    - run: |
-        docker build . -t ${{ secrets.REGISTRY_SERVER }}/sampleapp:latest
-        docker push ${{ secrets.REGISTRY_SERVER }}/sampleapp:latest
+
+    # Install helm
+    - name: build
+      run: |
+        az acr build --image sampleapp:latest --registry babuactions --file Dockerfile .
 
     # Install helm
     - name: Install Helm
