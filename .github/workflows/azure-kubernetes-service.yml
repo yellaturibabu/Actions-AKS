@@ -30,7 +30,7 @@ jobs:
       run: |
         curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
         
-    - name: Get AKS credentials
+    - name: deploy
       env:
         CLUSTER_RESOURCE_GROUP_NAME: ${{ env.CLUSTER_RESOURCE_GROUP }}
         CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
