@@ -24,11 +24,21 @@ jobs:
     - run: |
         docker build . -t ${{ secrets.REGISTRY_SERVER }}/sampleapp:latest
         docker push ${{ secrets.REGISTRY_SERVER }}/sampleapp:latest
-    - name: Gets K8s context
-      uses: azure/aks-set-context@v1
-      with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
-          cluster-name: ${{ env.CLUSTER_NAME }}
-      id: login
 
+    # Install helm
+    - name: Install Helm
+      run: |
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+        
+    - name: Get AKS credentials
+      env:
+        CLUSTER_RESOURCE_GROUP_NAME: ${{ env.CLUSTER_RESOURCE_GROUP }}
+        CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
+      run: |
+        az aks get-credentials \
+          --resource-group $CLUSTER_RESOURCE_GROUP \
+          --name $CLUSTER_NAME \
+          --overwrite-existing
+        helm upgrade -i vote-app azure-vote-front/ --set image.repository=babuactions.azurecr.io/sampleapp --set image.tag=latest --wait
+        kubectl get services -o wide
+        
