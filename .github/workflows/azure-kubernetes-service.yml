@@ -16,15 +16,16 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
+
+
     - name: Build image on ACR and push
       uses: azure/CLI@v1
       with:
         azcliversion: 2.29.1
         inlineScript: |
-          az configure --defaults acr=${{ env.AZURE_CONTAINER_REGISTRY }}
-          az acr build -t  -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.PROJECT_NAME }}:latest
-    
+          az configure --defaults acr=${{ env.REGISTRY_NAME }}
+          az acr build --registry ${{ env.REGISTRY_NAME }} --image ${{ env.PROJECT_NAME }}:latest .
+          
     - name: Gets K8s context
       uses: azure/aks-set-context@v1
       with:
