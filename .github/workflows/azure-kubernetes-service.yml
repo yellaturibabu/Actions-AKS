@@ -26,7 +26,7 @@ jobs:
           az configure --defaults acr=${{ env.AZURE_CONTAINER_REGISTRY }}
           az acr build -t  -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.PROJECT_NAME }}:latest
     
-    - name: Gets K8s context
+    - name: Gets K8s contexts
       uses: azure/aks-set-context@v1
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
