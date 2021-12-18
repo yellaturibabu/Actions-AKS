@@ -10,4 +10,4 @@ jobs:
         env:
           SUPER_SECRET: ${{ secrets.AZURE_CREDENTIALS }}
         run: |
-          example-command "$SUPER_SECRET"
+          echo "$SUPER_SECRET"
